@@ -1,5 +1,6 @@
 package br.com.main;
 
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -12,19 +13,16 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle;
+import javax.swing.WindowConstants;
 
 import br.com.actions.Acoes;
 import br.com.actions.ListaDePratos;
 import br.com.model.Pratos;
 
 public class Teste extends JFrame implements ActionListener {
-
-	Pratos massa = new Pratos("pastel", "");
-	Pratos zeroMassa = new Pratos("sopa", "");
-
-	// static List<Pratos> massaList = new ArrayList<Pratos>();
-	// static List<Pratos> naoEmassaList = new ArrayList<Pratos>();
-
+ 
+	
+	// lista e botoes estaticos para nao precisar criar outros pelo código
 	private static ListaDePratos listaMassa = new ListaDePratos();
 	private static ListaDePratos naoEmassa = new ListaDePratos();
 
@@ -33,59 +31,62 @@ public class Teste extends JFrame implements ActionListener {
 
 	public Teste() {
 		startTela();
+		Pratos massa = new Pratos("pastel", "");
+		Pratos zeroMassa = new Pratos("sopa", "");
+
 		Teste.listaMassa.getPratoS().add(massa);
 		Teste.naoEmassa.getPratoS().add(zeroMassa);
 	}
 
+	// acesso aos métodos necessários
+	private static Acoes iniciar = new Acoes();
+
 	private void startTela() {
 
-		label = new javax.swing.JLabel();
-		botao = new javax.swing.JButton();
+		label = new JLabel();
+		botao = new JButton();
 
 		// do_nothing fecha a janela sem nenhum efeito
-		setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		setTitle("Jogo Gourmet - TESTE");
 
-		// PRIMEIRA TELA
+		// PRIMEIRA TELA E BOTÃO
 		label.setText("Pense em um prato que gosta");
-
 		botao.setText("OK");
-		botao.setText("OK");
-
-		botao.addActionListener(new java.awt.event.ActionListener() {
-
+		// EVENTO DO BOTÃO
+		botao.addActionListener(new ActionListener() {
 			// sobrescreve o metodo do ActionListener
 			@Override
-			public void actionPerformed(java.awt.event.ActionEvent evento) {
+			public void actionPerformed(ActionEvent evento) {
 				eventoAoBotao(evento);
 
 			}
 		});
 
 		// TAMANHOS DA TELA
-		GroupLayout layout = new GroupLayout(getContentPane());
-		getContentPane().setLayout(layout);
+		GroupLayout tela = new GroupLayout(getContentPane());
+		getContentPane().setLayout(tela);
 
-		layout.setHorizontalGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-				.addGroup(layout.createSequentialGroup()
-						.addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
-								.addGroup(layout.createSequentialGroup().addGap(80, 80, 80).addComponent(label))
-								.addGroup(layout.createSequentialGroup().addGap(90, 90, 90).addComponent(botao,
+		tela.setHorizontalGroup(tela.createParallelGroup(GroupLayout.Alignment.LEADING)
+				.addGroup(tela.createSequentialGroup()
+						.addGroup(tela.createParallelGroup(GroupLayout.Alignment.LEADING)
+								.addGroup(tela.createSequentialGroup().addGap(50).addComponent(label))
+								.addGroup(tela.createSequentialGroup().addGap(50).addComponent(botao,
 
-										GroupLayout.DEFAULT_SIZE, 50, GroupLayout.DEFAULT_SIZE)))
-						.addContainerGap(30, Short.MAX_VALUE)));
-		layout.setVerticalGroup(
-				layout.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(GroupLayout.Alignment.TRAILING,
-						layout.createSequentialGroup().addContainerGap(64, Short.MAX_VALUE).addComponent(label)
+										GroupLayout.PREFERRED_SIZE, 100, GroupLayout.PREFERRED_SIZE)))
+						.addContainerGap(15, Short.MAX_VALUE)));
+		tela.setVerticalGroup(
+				tela.createParallelGroup(GroupLayout.Alignment.LEADING).addGroup(GroupLayout.Alignment.TRAILING,
+						tela.createSequentialGroup().addContainerGap(50, Short.MAX_VALUE).addComponent(label)
 								.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED).addComponent(botao)
-								.addGap(19, 19, 19)));
+								.addGap(50)));
 		// Isso faz a Janela ajustar o tamanho de acordo com o que estiver nela.
 		pack();
 		setLocationRelativeTo(null);
 	}
 
 	// evento do botão
-	private void eventoAoBotao(java.awt.event.ActionEvent evento) {
+	private void eventoAoBotao(ActionEvent evento) {
 		// visibilidade dos botões
 		this.setVisible(false);
 		// faz a tela ficar aparecendo sempre
@@ -94,9 +95,8 @@ public class Teste extends JFrame implements ActionListener {
 	}
 
 	public static void main(String... args) {
-
 		// instancia e exibe a aplicaçao
-		java.awt.EventQueue.invokeLater(() -> {
+		EventQueue.invokeLater(() -> {
 			new Teste().setVisible(true);
 		});
 	}
@@ -104,38 +104,37 @@ public class Teste extends JFrame implements ActionListener {
 	private void iniciaAplicacao() {
 		int resposta = JOptionPane.showConfirmDialog(rootPane, "O prato que voce pensou é massa ?", "",
 				JOptionPane.YES_NO_OPTION);
-		// se o botão for SIM
+			//SE SIM
 		if (resposta == JOptionPane.YES_OPTION) {
 			descobrePrato(listaMassa);
 			return;
 		}
+		if (resposta == JOptionPane.NO_OPTION) {
+			descobrePrato(naoEmassa);
+		}
 		// se o botao for NAO
-		descobrePrato(naoEmassa);
 	}
 
-	// acesso aos métodos necessários
-	private static Acoes iniciar = new Acoes();
-
 	private void descobrePrato(ListaDePratos pratosss) {
-		int cont;
+		int cont = 0;
 		int lista = pratosss.getPratoS().size() - 1;
 		int resposta;
-		for (cont = lista; cont > 0; cont--) {
-			resposta = iniciar.pergunta(pratosss, cont, true);
+
+		for (cont = lista; lista > cont; cont--) { // percorre a lista
+			resposta = iniciar.pergunta(pratosss, cont, true); // faz uma pergunta A
+			// se for sim chama o metodo ACERTO
 			if (resposta == JOptionPane.YES_OPTION) {
-				resposta = iniciar.pergunta(pratosss, cont, false);
+				resposta = iniciar.pergunta(pratosss, cont, false); // faz uma pergunta B
 				if (resposta == JOptionPane.YES_OPTION) {
 				}
 				iniciar.acerto();
 				break;
-			} else if ((resposta == JOptionPane.NO_OPTION) && (cont == 0)) {
+				//se a resposta for não, então adiciona o prato na lista
+			} else if ((resposta == JOptionPane.NO_OPTION)) {
 				iniciar.adiciona(pratosss, cont);
 				break;
 			}
 		}
-
-		// ----------------------------------------------------------------------------
-		// 1
 		if (cont == 0) {
 			resposta = iniciar.pergunta(pratosss, cont, false);
 			if (resposta == JOptionPane.YES_OPTION) {
@@ -143,13 +142,10 @@ public class Teste extends JFrame implements ActionListener {
 				return;
 			}
 			iniciar.adiciona(pratosss, cont);
-
 		}
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-
+	public void actionPerformed(ActionEvent evento) {
 	}
 }
